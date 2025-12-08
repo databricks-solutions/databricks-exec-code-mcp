@@ -1,27 +1,27 @@
-# 🪩 VibeCoding Project — Developing in Databricks
+## Databricks MCP Code Execution Template via Command Execution API
 
 Goal:
 > Enable end-to-end development in Databricks using VibeCoding, with CI/CD support via GitHub Actions. Can be applied to general development or ML pipelines.
 
 ---
 
-## 🚀 Before Starting - User Configuration Required
+### 🚀 Before Starting - User Configuration Required
 
 When a user asks to deploy an pipeline, the AI assistant should **first collect the following information**:
 
-### 1. Databricks Workspace
+#### 1. Databricks Workspace
 Ask the user:
 - **Workspace URL**: e.g., `https://dbc-xxxxx.cloud.databricks.com`
 - **Personal Access Token (PAT)**: Generated from Databricks User Settings → Developer → Access Tokens
 - **Catalog name**: Unity Catalog to use (must use underscores, not hyphens)
 - **Cluster ID** (optional): If using a specific all-purpose cluster
 
-### 2. GitHub Repository
+#### 2. GitHub Repository
 Ask the user:
 - **Repository name**: Where to push the DABs project (e.g., `my-mlops-project`)
 - **Repository owner**: GitHub username or organization
 
-### 3. GitHub MCP Server
+#### 3. GitHub MCP Server
 Verify the user has the GitHub MCP server configured in their `.cursor/mcp.json` or Claude settings:
 ```json
 {
@@ -36,7 +36,7 @@ Verify the user has the GitHub MCP server configured in their `.cursor/mcp.json`
 }
 ```
 
-### 4. Databricks MCP Server (Optional)
+#### 4. Databricks MCP Server (Optional)
 For direct execution on Databricks clusters:
 ```json
 {
@@ -51,7 +51,7 @@ For direct execution on Databricks clusters:
 
 ---
 
-## 🔐 GitHub Secrets Setup
+### 🔐 GitHub Secrets Setup
 
 **Instruct the user** to configure these secrets in their GitHub repository:
 
@@ -67,9 +67,9 @@ For direct execution on Databricks clusters:
 
 ---
 
-## 📦 Packaging & Deployment Standards
+### 📦 Packaging & Deployment Standards
 
-### 1. General Deployment Instructions
+#### 1. General Deployment Instructions
 - When the user says or asks to "deploy the code or test it to Databricks", use the databricks-dev-mcp MCP you have it available.
 - When the user only asks to deploy the ML pipeline or any other pipeline end-to-end in Databricks, you should package the code with dabs and deploy the bundle as a pipeline in Databricks first and then additionally ask about GitHub Actions settings.
 - Do NOT run anything locally or simulate results.
@@ -81,12 +81,12 @@ For direct execution on Databricks clusters:
 - When the workflow runs on GitHub (Actions) please check after submission if pipline was successful. If the workflow crashes in GitHub Actions, immediately inform the user and show a plan to fix the issue, including error logs and remediation steps.
 
 
-### 2. Always Use Databricks Asset Bundles (DABs)
+#### 2. Always Use Databricks Asset Bundles (DABs)
 - Package all Databricks code using `databricks.yml`
 - Validate bundles before deployment: `databricks bundle validate -t <target>`
 - Never create standalone scripts without bundle packaging
 
-### 3. Pipeline Structure
+#### 3. Pipeline Structure
 Organize code following the this pattern:
 ```
 project/
@@ -108,12 +108,12 @@ project/
 **⚠️ Important DABs Path Resolution:**
 When using `include: - resources/*.yml` in `databricks.yml`, notebook paths in those resource files are resolved **relative to the resource file location**, not the bundle root. For example, if your job YAML is in `resources/`, use `notebook_path: ../src/notebooks/my_notebook.py` (with `../` to navigate back to bundle root) instead of `notebook_path: src/notebooks/my_notebook.py`.
 
-### 4. Parameterize Everything - No Hard-Coded Values
+#### 4. Parameterize Everything - No Hard-Coded Values
 - Use bundle variables: `${var.catalog}`, `${var.schema}`, `${bundle.target}`
 - Workspace paths: `${workspace.current_user.userName}`
 - Environment-specific configs in `config/*.yaml`
 
-### 5. Multi-Environment Support
+#### 5. Multi-Environment Support
 Always configure three targets in `databricks.yml`:
 - `dev` - Development (user workspace)
 - `staging` - Pre-production testing
@@ -121,7 +121,7 @@ Always configure three targets in `databricks.yml`:
 
 ---
 
-## 🔄 CI/CD Pipeline Setup
+### 🔄 CI/CD Pipeline Setup
 
 The AI should create a GitHub Actions workflow (`.github/workflows/ci.yml`) that:
 
@@ -138,7 +138,7 @@ The AI should create a GitHub Actions workflow (`.github/workflows/ci.yml`) that
 
 ---
 
-## 🧠 AI Assistant Workflow
+### 🧠 AI Assistant Workflow
 
 When being asked to deploy and manage a complete CI/CD end-to-end ML pipeline with Github Actions, the AI should:
 
@@ -152,7 +152,7 @@ When being asked to deploy and manage a complete CI/CD end-to-end ML pipeline wi
 
 ---
 
-## 🔒 Safety & Permissions
+### 🔒 Safety & Permissions
 
 - Never hard-code tokens or secrets in files
 - Use GitHub secrets for CI/CD authentication
@@ -161,7 +161,7 @@ When being asked to deploy and manage a complete CI/CD end-to-end ML pipeline wi
 
 ---
 
-## 🛠️ Serverless Compute Considerations
+### 🛠️ Serverless Compute Considerations
 
 When deploying to serverless-only workspaces:
 - Do NOT define `new_cluster` in job tasks
@@ -171,7 +171,7 @@ When deploying to serverless-only workspaces:
 
 ---
 
-## 📚 Reference Links
+### 📚 Reference Links
 
 - [Databricks Asset Bundles](https://docs.databricks.com/dev-tools/bundles/index.html)
 - [MLOps Deployment Patterns](https://docs.databricks.com/aws/en/machine-learning/mlops/deployment-patterns#deploy-code-recommended)
