@@ -1,6 +1,7 @@
-#  Databricks MCP Code Execution Template via Command Execution API
+##  Databricks MCP Code Execution Template via Command Execution API
+This template streamlines and accelerates development in Databricks by leveraging the Databricks Command Execution API, exposed through an MCP server, to run and test code directly in Databricks. It also enables end-to-end pipeline deployment using vibecoding capabilities.
 
-## 🎯 What This Does
+### 🎯 What This Does
 
 This template enables AI assistants to:
 - ✅ Run, execute, test code directly to Databricks via the command execution API
@@ -9,19 +10,19 @@ This template enables AI assistants to:
 - ✅ Deploy to multiple environments (dev/staging/prod)
 - ✅ All from natural language prompts!
 
-**Just describe what you want → AI builds & deploys the complete pipeline.**
+**Just describe what you want → AI builds, tests the code and deploys the complete pipeline.**
 
 ---
 
-## 🚀 Quick Start
+### 🚀 Quick Start
 
-### 1. Clone This Repository
+#### 1. Clone This Repository
 
 ```bash
 cd databricks-exec-code-mcp
 ```
 
-### 2. Configure MCP Servers
+#### 2. Configure MCP Servers
 
 Start the MCP Server
 
@@ -57,7 +58,7 @@ Restart Cursor.
 
 ---
 
-### Claude Code
+#### Claude Code
 
 File: `~/.config/claude/mcp.json`
 
@@ -88,7 +89,7 @@ Restart Claude Code.
 }
 ```
 
-### 3. Prepare Your Credentials
+#### 3. Prepare Your Credentials
 
 You'll need:
 - **Databricks Workspace URL**: `https://dbc-xxxxx.cloud.databricks.com`
@@ -96,7 +97,7 @@ You'll need:
 - **Unity Catalog Name**: e.g., `my_catalog`
 - **GitHub Repository**: Where to push the generated project
 
-### 4. Open in Your AI Client
+#### 4. Open in Your AI Client
 
 Open this folder in Cursor or add it to Claude Desktop, then start chatting 💬
 
@@ -104,7 +105,7 @@ Open this folder in Cursor or add it to Claude Desktop, then start chatting 💬
 
 ---
 
-### 5. Default context to agentic coding tools
+#### 5. Default context to agentic coding tools
 
 **For Cursor**
 
@@ -122,7 +123,7 @@ Navigate to the directory of your project where the claude.md file is residing i
 
 ---
 
-## 🔐 GitHub Secrets Setup
+### 🔐 GitHub Secrets Setup
 
 After the AI creates your GitHub repository, add these secrets:
 
@@ -136,7 +137,7 @@ After the AI creates your GitHub repository, add these secrets:
 
 ---
 
-## 📁 What Gets Generated
+### 📁 What Gets Generated
 
 The AI will create a complete the project:
 
@@ -164,7 +165,7 @@ your-project/
 
 ---
 
-## 🌟 Features
+### 🌟 Features
 
 | Feature | Description |
 |---------|-------------|
@@ -175,16 +176,16 @@ your-project/
 
 ---
 
-## 🛠️ Troubleshooting
+### 🛠️ Troubleshooting
 
-### IP ACL Errors
+#### IP ACL Errors
 If you see "Source IP address is blocked", your workspace has IP restrictions. Options:
 1. Add GitHub Actions IP ranges to your workspace IP Access List
 2. Use a self-hosted GitHub runner
 
 ---
 
-## 📚 Resources
+### 📚 Resources
 
 - [Databricks Asset Bundles](https://docs.databricks.com/dev-tools/bundles/index.html)
 - [MLOps Deployment Patterns](https://docs.databricks.com/aws/en/machine-learning/mlops/deployment-patterns)
