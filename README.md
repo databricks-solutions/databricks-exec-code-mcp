@@ -66,10 +66,9 @@ File: `~/.config/claude/mcp.json`
 {
   "mcpServers": {
     "github": {
-      "type": "http",
       "url": "https://api.githubcopilot.com/mcp/",
       "headers": {
-        "Authorization": "Bearer ${GITHUB_TOKEN}"
+        "Authorization": "Bearer <YOUR_GITHUB_TOKEN>"
       }
     },
     "databricks-dev-mcp": {
@@ -85,19 +84,21 @@ Restart Claude Code.
 **For Claude Desktop** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
 ```json
 {
-  "mcpServers": {
-    "github": {
+  "mcpServers": [
+    {
+      "id": "github",
       "type": "http",
       "url": "https://api.githubcopilot.com/mcp/",
       "headers": {
-        "Authorization": "Bearer YOUR_GITHUB_TOKEN"
+        "Authorization": "Bearer <YOUR_GITHUB_TOKEN>"
       }
     },
-    "databricks-dev-mcp": {
+    {
+      "id": "databricks-dev-mcp",
       "type": "http",
       "url": "http://localhost:8000/message"
     }
-  }
+  ]
 }
 ```
 
@@ -128,10 +129,6 @@ Include the claude.md file following any of the below options:
 **For Claude code**
 
 Navigate to the directory of your project where the claude.md file is residing i.e mcp-accl/vibe-databricks/
-
-
-
-
 
 ---
 
@@ -203,4 +200,3 @@ If you see "Source IP address is blocked", your workspace has IP restrictions. O
 - [MLOps Deployment Patterns](https://docs.databricks.com/aws/en/machine-learning/mlops/deployment-patterns)
 - [MCP Specification](https://modelcontextprotocol.io/)
 - [GitHub Actions for Databricks](https://github.com/databricks/setup-cli)
-
