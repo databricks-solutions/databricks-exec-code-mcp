@@ -65,6 +65,13 @@ File: `~/.config/claude/mcp.json`
 ```json
 {
   "mcpServers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_TOKEN}"
+      }
+    },
     "databricks-dev-mcp": {
       "type": "http",
       "url": "http://localhost:8000/message"
@@ -80,10 +87,15 @@ Restart Claude Code.
 {
   "mcpServers": {
     "github": {
+      "type": "http",
       "url": "https://api.githubcopilot.com/mcp/",
       "headers": {
-        "Authorization": "Bearer <YOUR_GITHUB_TOKEN>"
+        "Authorization": "Bearer YOUR_GITHUB_TOKEN"
       }
+    },
+    "databricks-dev-mcp": {
+      "type": "http",
+      "url": "http://localhost:8000/message"
     }
   }
 }
