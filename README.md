@@ -116,6 +116,11 @@ Add the `claude.md` file to your project:
 **For Claude Code:**
 Navigate to the directory containing the `claude.md` file.
 
+
+#### 6. Example prompts
+
+To start chatting with the AI-assistant, you can also leverage some examples in [`example_prompts`](./example_prompts).
+
 ---
 
 ### 📁 What Gets Generated
