@@ -1,16 +1,38 @@
-##  Databricks MCP Code Execution Template via Command Execution API
-This template streamlines and accelerates development in Databricks by leveraging the Databricks Command Execution API, exposed through an MCP server, to run and test code directly in Databricks. It also enables end-to-end pipeline deployment using vibecoding capabilities.
+## Databricks MCP Code Execution Template
+
+This template enables AI-assisted development in Databricks by leveraging the Databricks Command Execution API through an MCP server. Test code directly on clusters, then deploy with Databricks Asset Bundles (DABs).
 
 ### 🎯 What This Does
 
 This template enables AI assistants to:
-- ✅ Run, execute, test code directly to Databricks via the command execution API
+- ✅ Run and test code directly on Databricks clusters via the Command Execution API
 - ✅ Create Databricks Asset Bundles (DABs) projects
-- ✅ Set up CI/CD with GitHub Actions
-- ✅ Deploy to multiple environments (dev/staging/prod)
+- ✅ Deploy pipelines to multiple environments (dev/staging/prod)
 - ✅ All from natural language prompts!
 
-**Just describe what you want → AI builds, tests the code and deploys the complete pipeline.**
+**Just describe what you want → AI builds, tests the code on Databricks, and deploys the complete pipeline.**
+
+---
+
+### ⚙️ Prerequisites - Set Up Environment Variables
+
+Before running the MCP server, configure your Databricks credentials as environment variables:
+
+```bash
+# Set your Databricks workspace URL (no trailing slash)
+export DATABRICKS_HOST=https://your-workspace.cloud.databricks.com
+
+# Set your Databricks Personal Access Token
+export DATABRICKS_TOKEN=dapi_your_token_here
+```
+
+**To get your Personal Access Token (PAT):**
+1. Go to your Databricks workspace
+2. Click your profile icon → **Settings** → **Developer**
+3. Click **Manage** under Access Tokens → **Generate new token**
+4. Copy the token (it won't be shown again!)
+
+> 💡 **Tip**: Add these exports to your `~/.zshrc` or `~/.bashrc` to persist them across terminal sessions.
 
 ---
 
@@ -22,17 +44,18 @@ This template enables AI assistants to:
 cd databricks-exec-code-mcp
 ```
 
-#### 2. Configure MCP Servers
-
-Start the MCP Server
+#### 2. Start the MCP Server
 
 ```bash
 python mcp_tools/tools.py
 ```
+
 The server runs at:
 ```
 http://localhost:8000
 ```
+
+#### 3. Configure Your AI Client
 
 Add the following to your MCP configuration:
 
@@ -40,37 +63,6 @@ Add the following to your MCP configuration:
 ```json
 {
   "mcpServers": {
-    "github": {
-      "url": "https://api.githubcopilot.com/mcp/",
-      "headers": {
-        "Authorization": "Bearer <YOUR_GITHUB_TOKEN>"
-      }
-    },
-    "databricks-dev-mcp": {
-        "type": "http",
-        "url": "http://localhost:8000/message"
-    }
-  }
-}
-```
-
-Restart Cursor.
-
----
-
-#### Claude Code
-
-File: `~/.config/claude/mcp.json`
-
-```json
-{
-  "mcpServers": {
-    "github": {
-      "url": "https://api.githubcopilot.com/mcp/",
-      "headers": {
-        "Authorization": "Bearer <YOUR_GITHUB_TOKEN>"
-      }
-    },
     "databricks-dev-mcp": {
       "type": "http",
       "url": "http://localhost:8000/message"
@@ -79,20 +71,22 @@ File: `~/.config/claude/mcp.json`
 }
 ```
 
-Restart Claude Code.
+**For Claude Code** (`~/.config/claude/mcp.json`):
+```json
+{
+  "mcpServers": {
+    "databricks-dev-mcp": {
+      "type": "http",
+      "url": "http://localhost:8000/message"
+    }
+  }
+}
+```
 
 **For Claude Desktop** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
 ```json
 {
   "mcpServers": [
-    {
-      "id": "github",
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/",
-      "headers": {
-        "Authorization": "Bearer <YOUR_GITHUB_TOKEN>"
-      }
-    },
     {
       "id": "databricks-dev-mcp",
       "type": "http",
@@ -102,74 +96,43 @@ Restart Claude Code.
 }
 ```
 
-#### 3. Prepare Your Credentials
+Restart your AI client after configuration.
+
+#### 4. Prepare Your Credentials
 
 You'll need:
 - **Databricks Workspace URL**: `https://dbc-xxxxx.cloud.databricks.com`
 - **Databricks PAT Token**: Generate from User Settings → Developer → Access Tokens
 - **Unity Catalog Name**: e.g., `my_catalog`
-- **GitHub Repository**: Where to push the generated project
+- **Cluster ID**: For testing code via Command Execution API
 
-#### 4. Open in Your AI Client
+#### 5. Include Context for AI
 
-Open this folder in Cursor or add it to Claude Desktop, then start chatting 💬
+**For Cursor:**
+Add the `claude.md` file to your project:
+1. Place it in `.cursor/claude.md` in your project root, OR
+2. Go to Settings → Rules and Commands → Toggle to include claude.md
 
- - In order to get started with some prompts, see [example_prompts/prompts.md](./example_prompts/prompts.md) for some ready-to-use examples.
-
----
-
-#### 5. Default context to agentic coding tools
-
-**For Cursor**
-
-Include the claude.md file following any of the below options:
-  1. Navigate and add claude.md file in .cursor folder in your project root like project-name/.cursor/claude.md 
-  2. Go to Settings-> Rules and Commands -> Toggle the button to include the claude.md in context and use @claude before your promp when interacting in the chat window.
-
-**For Claude code**
-
-Navigate to the directory of your project where the claude.md file is residing i.e mcp-accl/vibe-databricks/
-
----
-
-### 🔐 GitHub Secrets Setup
-
-After the AI creates your GitHub repository, add these secrets:
-
-1. Go to: `https://github.com/<owner>/<repo>/settings/secrets/actions`
-2. Add:
-
-| Secret Name | Value |
-|-------------|-------|
-| `DATABRICKS_HOST` | `https://dbc-xxxxx.cloud.databricks.com` |
-| `DATABRICKS_TOKEN` | `dapi...` (your PAT token) |
+**For Claude Code:**
+Navigate to the directory containing the `claude.md` file.
 
 ---
 
 ### 📁 What Gets Generated
 
-The AI will create a complete the project:
+The AI will create a complete DABs project:
 
 ```
 your-project/
 ├── databricks.yml              # DABs configuration
-├── requirements.txt            # Python dependencies
 ├── resources/
 │   └── training_job.yml        # Databricks job definition
-├── config/
-│   ├── dev.yaml               # Dev environment config
-│   ├── staging.yaml           # Staging config
-│   └── prod.yaml              # Production config
 ├── src/<project>/
-│   ├── training/
-│   │   ├── feature_engineering.py
-│   │   └── train.py
-│   └── validation/
-│       └── validate_model.py
-├── tests/
-│   └── test_config.py
-└── .github/workflows/
-    └── ci.yml                  # CI/CD pipeline
+│   └── notebooks/
+│       ├── 01_data_prep.py
+│       ├── 02_training.py
+│       └── 03_validation.py
+└── tests/                      # Unit tests (optional)
 ```
 
 ---
@@ -178,19 +141,25 @@ your-project/
 
 | Feature | Description |
 |---------|-------------|
-| **Multi-Environment** | Automatic dev/staging/prod deployments |
-| **Unity Catalog** | Models registered to UC for governance |
+| **Direct Cluster Execution** | Test code on Databricks clusters via MCP |
+| **DABs Packaging** | Production-ready bundle deployment |
+| **Multi-Environment** | Support for dev/staging/prod targets |
+| **Unity Catalog** | Models and data registered to UC for governance |
 | **MLflow Tracking** | Experiment tracking and model versioning |
-| **GitHub Actions CI/CD** | Automated validation and deployment |
 
 ---
 
 ### 🛠️ Troubleshooting
 
-#### IP ACL Errors
-If you see "Source IP address is blocked", your workspace has IP restrictions. Options:
-1. Add GitHub Actions IP ranges to your workspace IP Access List
-2. Use a self-hosted GitHub runner
+#### MCP Server Connection Issues
+1. Ensure the MCP server is running: `python mcp_tools/tools.py`
+2. Verify environment variables are set: `echo $DATABRICKS_HOST`
+3. Check your AI client's MCP configuration
+
+#### Databricks Authentication
+If CLI authentication fails:
+- Run `databricks auth login --host <workspace_url>` for interactive login
+- Or set `DATABRICKS_HOST` and `DATABRICKS_TOKEN` environment variables
 
 ---
 
@@ -199,4 +168,3 @@ If you see "Source IP address is blocked", your workspace has IP restrictions. O
 - [Databricks Asset Bundles](https://docs.databricks.com/dev-tools/bundles/index.html)
 - [MLOps Deployment Patterns](https://docs.databricks.com/aws/en/machine-learning/mlops/deployment-patterns)
 - [MCP Specification](https://modelcontextprotocol.io/)
-- [GitHub Actions for Databricks](https://github.com/databricks/setup-cli)
