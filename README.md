@@ -6,11 +6,14 @@ This template enables AI-assisted development in Databricks by leveraging the Da
 
 This template enables AI assistants to:
 - ✅ Run and test code directly on Databricks clusters via the Command Execution API
+- ✅ Auto-select clusters - no need to specify a cluster ID, automatically connects to a running cluster
 - ✅ Create Databricks Asset Bundles (DABs) projects
 - ✅ Deploy pipelines to multiple environments (dev/staging/prod)
 - ✅ All from natural language prompts!
 
 **Just describe what you want → AI builds, tests the code on Databricks, and deploys the complete pipeline.**
+
+> 💡 **Smart Cluster Selection**: If no `cluster_id` is provided, the MCP server automatically finds a running cluster in your workspace (prioritizing clusters with "interactive", "general", or "all-purpose" in the name).
 
 ---
 
@@ -47,85 +50,72 @@ cd databricks-exec-code-mcp
 #### 2. Install Requirements
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-#### 3. Start the MCP Server
+#### 3. Configure Your AI Client
 
-```bash
-python mcp_tools/tools.py
-```
+Add the MCP server to your configuration. Use the path to your cloned repo:
 
-The server runs at:
-```
-http://localhost:8000
-```
-
-#### 4. Configure Your AI Client
-
-Add the following to your MCP configuration:
-
-**For Cursor** (`~/.cursor/mcp.json`):
+**For Cursor** (`.cursor/mcp.json` in your project, or global `~/.cursor/mcp.json`):
 ```json
 {
   "mcpServers": {
-    "databricks-dev-mcp": {
-      "type": "http",
-      "url": "http://localhost:8000/message"
+    "databricks": {
+      "command": "/path/to/databricks-exec-code-mcp/.venv/bin/python",
+      "args": ["/path/to/databricks-exec-code-mcp/mcp_tools/tools.py"]
     }
   }
 }
 ```
 
-**For Claude Code** (`~/.config/claude/mcp.json`):
+**For Claude Code** (`.claude/mcp.json` in your project):
 ```json
 {
   "mcpServers": {
-    "databricks-dev-mcp": {
-      "type": "http",
-      "url": "http://localhost:8000/message"
+    "databricks": {
+      "command": "/path/to/databricks-exec-code-mcp/.venv/bin/python",
+      "args": ["/path/to/databricks-exec-code-mcp/mcp_tools/tools.py"]
     }
   }
 }
 ```
 
-**For Claude Desktop** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
-```json
-{
-  "mcpServers": [
-    {
-      "id": "databricks-dev-mcp",
-      "type": "http",
-      "url": "http://localhost:8000/message"
-    }
-  ]
-}
-```
+> 💡 **Tip**: Replace `/path/to/databricks-exec-code-mcp` with the actual path to your cloned repo.
 
 Restart your AI client after configuration.
 
-#### 5. Prepare Your Credentials
+#### 4. Install Skills
 
-You'll need:
-- **Databricks Workspace URL**: `https://dbc-xxxxx.cloud.databricks.com`
-- **Databricks PAT Token**: Generate from User Settings → Developer → Access Tokens
-- **Unity Catalog Name**: e.g., `my_catalog`
-- **Cluster ID**: For testing code via Command Execution API
+Install the Databricks skills to teach your AI assistant how to work with Databricks:
 
-#### 6. Include Context for AI
+```bash
+# Install for both Cursor and Claude Code
+./install_skills.sh --all
 
-**For Cursor:**
-Add the `claude.md` file to your project:
-1. Place it in `.cursor/claude.md` in your project root, OR
-2. Go to Settings → Rules and Commands → Toggle to include claude.md
+# Or install for a specific client
+./install_skills.sh --cursor
+./install_skills.sh --claude
+```
 
-**For Claude Code:**
-Navigate to the directory containing the `claude.md` file.
+This installs skills to:
+- **Cursor**: `.cursor/rules/`
+- **Claude Code**: `.claude/skills/`
 
+#### 5. Start Building!
 
-#### 7. Example prompts
+Just describe what you want in natural language:
 
-To start chatting with the AI-assistant, you can also leverage some examples in [`example_prompts`](./example_prompts).
+**Data Engineering:**
+> "Build a Data Engineering pipeline using Medallion Architecture on the NYC Taxi dataset and deploy it with DABs"
+
+**Machine Learning:**
+> "Train a classification model on the Titanic dataset, register it to Unity Catalog, and deploy as a DAB job"
+
+**Quick Test:**
+> "Run a SQL query to show the top 10 tables in my catalog"
 
 ---
 

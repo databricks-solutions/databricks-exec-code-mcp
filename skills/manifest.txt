@@ -1,0 +1,7 @@
+# Skills manifest - one skill name per line
+# This file is used for remote discovery when installing skills
+databricks-testing
+databricks-unity-catalog
+databricks-bundle-deploy
+databricks-ml-pipeline
+databricks-data-engineering

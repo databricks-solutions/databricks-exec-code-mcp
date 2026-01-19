@@ -1,0 +1,26 @@
+# User-specific MCP config
+.mcp.json
+.cursor/mcp.json
+.claude/mcp.json
+
+# Installed skills (in user projects)
+.cursor/rules/
+.claude/skills/
+.cursor
+.claude
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
