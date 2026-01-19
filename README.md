@@ -179,3 +179,18 @@ If CLI authentication fails:
 - [Databricks Asset Bundles](https://docs.databricks.com/dev-tools/bundles/index.html)
 - [MLOps Deployment Patterns](https://docs.databricks.com/aws/en/machine-learning/mlops/deployment-patterns)
 - [MCP Specification](https://modelcontextprotocol.io/)
+
+---
+
+### 📜 License
+
+© 2025 Databricks, Inc. All rights reserved. The source in this project is provided subject to the [Databricks License](LICENSE.md).
+
+#### Third-Party Licenses
+
+| Package | License | Copyright |
+|---------|---------|-----------|
+| [FastAPI](https://github.com/tiangolo/fastapi) | MIT License | Copyright (c) 2018 Sebastián Ramírez |
+| [requests](https://github.com/psf/requests) | Apache License 2.0 | Copyright 2019 Kenneth Reitz |
+| [uvicorn](https://github.com/encode/uvicorn) | BSD 3-Clause License | Copyright © 2017-present, Encode OSS Ltd |
+| [python-dotenv](https://github.com/theskumar/python-dotenv) | BSD 3-Clause License | Copyright (c) 2014, Saurabh Kumar |
