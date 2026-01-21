@@ -92,15 +92,13 @@ Restart your AI client after configuration.
 Install the Databricks skills to teach your AI assistant how to work with Databricks:
 
 ```bash
-# Install for both Cursor and Claude Code (from cloned repo)
-./install_skills.sh --all --local
+# Install for both Cursor and Claude Code
+./install_skills.sh --all
 
 # Or install for a specific client
-./install_skills.sh --cursor --local
-./install_skills.sh --claude --local
+./install_skills.sh --cursor
+./install_skills.sh --claude
 ```
-
-> 💡 **Note**: Use `--local` when running from the cloned repository. Without `--local`, the script attempts to download skills from the remote GitHub repository.
 
 This installs skills to:
 - **Cursor**: `.cursor/rules/`
@@ -153,14 +151,6 @@ your-project/
 ---
 
 ### 🛠️ Troubleshooting
-
-#### Skills Installation Issues (Cursor)
-
-If `./install_skills.sh` fails with permission errors, create the directory first:
-```bash
-mkdir -p .cursor/rules
-./install_skills.sh --cursor --local
-```
 
 #### MCP Server Connection Issues
 1. Ensure the MCP server is running: `python mcp_tools/tools.py`
