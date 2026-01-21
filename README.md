@@ -71,21 +71,12 @@ Add the MCP server to your configuration. Use the path to your cloned repo:
 }
 ```
 
-**For Claude Code** (`.claude/mcp.json` in your project):
-```json
-{
-  "mcpServers": {
-    "databricks": {
-      "command": "/path/to/databricks-exec-code-mcp/.venv/bin/python",
-      "args": ["/path/to/databricks-exec-code-mcp/mcp_tools/tools.py"]
-    }
-  }
-}
+**For Claude Code** 
+```
+cd /path/to/your/project
 
-```
-Then add the MCP server via CLI: 
-```
-claude mcp add databricks /path/to/.venv/bin/python /path/to/mcp_tools/tools.py
+# Register the MCP server
+claude mcp add-json databricks '{"command":"/path/to/.venv/bin/python","args":["/path/to/mcp_tools/tools.py"]}'    
 ```
 
 > 💡 **Tip**: Replace `/path/to/databricks-exec-code-mcp` with the actual path to your cloned repo.
