@@ -1,4 +1,3 @@
-fastapi
+mcp
 requests
-dotenv
-uvicorn
+python-dotenv
