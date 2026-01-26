@@ -75,24 +75,8 @@ Point your AI client to the MCP server you set up in Step 1.
 ```
 
 **For Claude Code** — run in your project:
-**For Claude Code** 
-```
-cd /path/to/your/project
-
-# Register the MCP server
-claude mcp add-json databricks '{"command":"/path/to/.venv/bin/python","args":["/path/to/mcp_tools/tools.py"]}'    
-```
-
-> 💡 **Tip**: Replace `/path/to/databricks-exec-code-mcp` with the actual path to your cloned repo.
-
-Restart your AI client after configuration.
-
-#### 4. Install Skills
-
-Install the Databricks skills to teach your AI assistant how to work with Databricks:
-
 ```bash
-claude mcp add databricks /path/to/databricks-exec-code-mcp/.venv/bin/python /path/to/databricks-exec-code-mcp/mcp_tools/tools.py
+claude mcp add-json databricks '{"command":"/path/to/databricks-exec-code-mcp/.venv/bin/python","args":["/path/to/databricks-exec-code-mcp/mcp_tools/tools.py"]}'
 ```
 
 > Replace `/path/to/databricks-exec-code-mcp` with the actual path from Step 1.
