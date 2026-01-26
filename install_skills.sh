@@ -110,12 +110,11 @@ get_available_skills() {
             done
         fi
     else
-        # Remote: fetch skills list from repo
-        # This requires a skills-list.txt file or we parse the directory
-        # For simplicity, we'll try to download a manifest file
+        # Remote: fetch skills list from repo manifest
         local manifest=$(curl -sSL -f "${REPO_RAW_URL}/skills/manifest.txt" 2>/dev/null || echo "")
         if [ -n "$manifest" ]; then
-            echo "$manifest"
+            # Filter out comment lines and empty lines, output one skill per line
+            echo "$manifest" | grep -v '^#' | grep -v '^[[:space:]]*$'
         else
             echo -e "${YELLOW}Warning: Could not fetch remote skills manifest${NC}" >&2
             echo -e "Use --local to install from local skills/ directory" >&2
@@ -335,7 +334,8 @@ if [ "$LIST_ONLY" = true ]; then
         exit 0
     fi
     
-    for skill in $skills; do
+    while IFS= read -r skill; do
+        [ -z "$skill" ] && continue
         skill_file="$SCRIPT_DIR/$SKILLS_SOURCE_DIR/$skill/SKILL.md"
         description=$(extract_frontmatter "description" "$skill_file")
         if [ -z "$description" ]; then
@@ -343,7 +343,7 @@ if [ "$LIST_ONLY" = true ]; then
         fi
         echo -e "  ${GREEN}$skill${NC}"
         echo -e "    $description"
-    done
+    done <<< "$skills"
     echo ""
     exit 0
 fi
@@ -400,8 +400,8 @@ if [ -z "$skills" ]; then
     exit 1
 fi
 
-# Count skills
-skill_count=$(echo "$skills" | wc -w | tr -d ' ')
+# Count skills (count lines, not words)
+skill_count=$(echo "$skills" | wc -l | tr -d ' ')
 echo -e "${GREEN}Found ${skill_count} skill(s) to install${NC}"
 echo ""
 
@@ -410,7 +410,12 @@ claude_installed=0
 cursor_installed=0
 failed=0
 
-for skill in $skills; do
+# Read line by line to handle skill names properly
+# Use here-string to avoid subshell and preserve counter values
+while IFS= read -r skill; do
+    # Skip empty lines
+    [ -z "$skill" ] && continue
+    
     echo -e "${BLUE}Installing:${NC} $skill"
     
     if [ "$INSTALL_CLAUDE" = true ]; then
@@ -430,7 +435,7 @@ for skill in $skills; do
     fi
     
     echo ""
-done
+done <<< "$skills"
 
 # Summary
 echo -e "${BLUE}════════════════════════════════════════════════════════════${NC}"

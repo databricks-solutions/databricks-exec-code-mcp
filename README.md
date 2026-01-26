@@ -4,112 +4,86 @@ This template enables AI-assisted development in Databricks by leveraging the Da
 
 ### 🎯 What This Does
 
-This template enables AI assistants to:
-- ✅ Run and test code directly on Databricks clusters via the Command Execution API
-- ✅ Auto-select clusters - no need to specify a cluster ID, automatically connects to a running cluster
-- ✅ Create Databricks Asset Bundles (DABs) projects
-- ✅ Deploy pipelines to multiple environments (dev/staging/prod)
+- ✅ Run and test code directly on Databricks clusters
+- ✅ Auto-select clusters - no need to specify a cluster ID
+- ✅ Create and deploy Databricks Asset Bundles (DABs)
 - ✅ All from natural language prompts!
 
 **Just describe what you want → AI builds, tests the code on Databricks, and deploys the complete pipeline.**
 
-> 💡 **Smart Cluster Selection**: If no `cluster_id` is provided, the MCP server automatically finds a running cluster in your workspace (prioritizing clusters with "interactive", "general", or "all-purpose" in the name).
-
 ---
 
-### ⚙️ Prerequisites - Set Up Environment Variables
+### 🚀 Quick Start (Recommended Workflow)
 
-Before running the MCP server, configure your Databricks credentials as environment variables:
+#### Step 1: Set Up the MCP Server (One Time)
 
-```bash
-# Set your Databricks workspace URL (no trailing slash)
-export DATABRICKS_HOST=https://your-workspace.cloud.databricks.com
-
-# Set your Databricks Personal Access Token
-export DATABRICKS_TOKEN=dapi_your_token_here
-```
-
-**To get your Personal Access Token (PAT):**
-1. Go to your Databricks workspace
-2. Click your profile icon → **Settings** → **Developer**
-3. Click **Manage** under Access Tokens → **Generate new token**
-4. Copy the token (it won't be shown again!)
-
-> 💡 **Tip**: Add these exports to your `~/.zshrc` or `~/.bashrc` to persist them across terminal sessions.
-
----
-
-### 🚀 Quick Start
-
-#### 1. Clone This Repository
+Clone and set up the MCP server somewhere on your machine:
 
 ```bash
+git clone https://github.com/databricks-solutions/databricks-exec-code-mcp.git
 cd databricks-exec-code-mcp
-```
-
-#### 2. Install Requirements
-
-```bash
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-#### 3. Configure Your AI Client
+#### Step 2: Configure Databricks Credentials
 
-Add the MCP server to your configuration. Use the path to your cloned repo:
-
-**For Cursor** (`.cursor/mcp.json` in your project, or global `~/.cursor/mcp.json`):
-```json
-{
-  "mcpServers": {
-    "databricks": {
-      "command": "/path/to/databricks-exec-code-mcp/.venv/bin/python",
-      "args": ["/path/to/databricks-exec-code-mcp/mcp_tools/tools.py"]
-    }
-  }
-}
-```
-
-**For Claude Code** (`.claude/mcp.json` in your project):
-```json
-{
-  "mcpServers": {
-    "databricks": {
-      "command": "/path/to/databricks-exec-code-mcp/.venv/bin/python",
-      "args": ["/path/to/databricks-exec-code-mcp/mcp_tools/tools.py"]
-    }
-  }
-}
-
-```
-Then add the MCP server via CLI: 
-```
-claude mcp add databricks /path/to/.venv/bin/python /path/to/mcp_tools/tools.py
-```
-
-> 💡 **Tip**: Replace `/path/to/databricks-exec-code-mcp` with the actual path to your cloned repo.
-
-Restart your AI client after configuration.
-
-#### 4. Install Skills
-
-Install the Databricks skills to teach your AI assistant how to work with Databricks:
+Add to your `~/.zshrc` or `~/.bashrc`:
 
 ```bash
-# Install for both Cursor and Claude Code (from cloned repo)
-./install_skills.sh --all
-
-# Or install for a specific client
-./install_skills.sh --cursor
-./install_skills.sh --claude 
+export DATABRICKS_HOST=https://your-workspace.cloud.databricks.com
+export DATABRICKS_TOKEN=dapi_your_token_here
 ```
 
-This installs skills to:
-- **Cursor**: `.cursor/rules/`
-- **Claude Code**: `.claude/skills/`
+**To get your Personal Access Token (PAT):** Databricks workspace → Profile → Settings → Developer → Access Tokens → Generate new token
 
-#### 5. Start Building!
+#### Step 3: Start a New Project
+
+Create your project directory and install the Databricks skills:
+
+```bash
+# Create and enter your project
+mkdir my-databricks-project && cd my-databricks-project
+
+# Install skills for your AI client (downloads from remote)
+curl -sSL https://raw.githubusercontent.com/databricks-solutions/databricks-exec-code-mcp/main/install_skills.sh | bash -s -- --cursor
+# Or for Claude Code:
+curl -sSL https://raw.githubusercontent.com/databricks-solutions/databricks-exec-code-mcp/main/install_skills.sh | bash -s -- --claude
+# Or for both:
+curl -sSL https://raw.githubusercontent.com/databricks-solutions/databricks-exec-code-mcp/main/install_skills.sh | bash -s -- --all
+```
+
+This creates:
+- **Cursor**: `.cursor/rules/` with Databricks rules
+- **Claude Code**: `.claude/skills/` with Databricks skills
+
+#### Step 4: Configure Your AI Client
+
+Point your AI client to the MCP server you set up in Step 1.
+
+**For Cursor** — create `.cursor/mcp.json` in your project:
+```json
+{
+  "mcpServers": {
+    "databricks": {
+      "command": "/path/to/databricks-exec-code-mcp/.venv/bin/python",
+      "args": ["/path/to/databricks-exec-code-mcp/mcp_tools/tools.py"]
+    }
+  }
+}
+```
+
+**For Claude Code** — run in your project:
+```bash
+claude mcp add databricks /path/to/databricks-exec-code-mcp/.venv/bin/python /path/to/databricks-exec-code-mcp/mcp_tools/tools.py
+```
+
+> Replace `/path/to/databricks-exec-code-mcp` with the actual path from Step 1.
+
+#### Step 5: Start Prompting!
+
+> 💡 **Smart Cluster Selection**: If no `cluster_id` is provided, the MCP server automatically finds a running cluster in your workspace.
 
 Just describe what you want in natural language:
 
@@ -172,7 +146,6 @@ your-project/
 
 | Package | License | Copyright |
 |---------|---------|-----------|
-| [FastAPI](https://github.com/tiangolo/fastapi) | MIT License | Copyright (c) 2018 Sebastián Ramírez |
+| [mcp](https://github.com/modelcontextprotocol/python-sdk) | MIT License | Copyright (c) 2024 Anthropic |
 | [requests](https://github.com/psf/requests) | Apache License 2.0 | Copyright 2019 Kenneth Reitz |
-| [uvicorn](https://github.com/encode/uvicorn) | BSD 3-Clause License | Copyright © 2017-present, Encode OSS Ltd |
 | [python-dotenv](https://github.com/theskumar/python-dotenv) | BSD 3-Clause License | Copyright (c) 2014, Saurabh Kumar |
