@@ -156,6 +156,15 @@ def create_context_impl(cluster_id: Optional[str] = None, language: str = "pytho
         msg += "\n\nUse this context_id for subsequent commands to maintain state."
         
         return msg
+    except requests.HTTPError as e:
+        # Include server response body when available to make debugging easier.
+        status = getattr(ctx_resp, "status_code", "unknown")
+        body = ""
+        try:
+            body = ctx_resp.text
+        except Exception:
+            body = "<unable to read response body>"
+        return f"Error creating context: {str(e)}\nHTTP {status}\nResponse:\n{body}"
     except Exception as e:
         return f"Error creating context: {str(e)}"
 
@@ -291,6 +300,15 @@ def databricks_command_impl(code: str, cluster_id: Optional[str] = None, languag
         result_data = results.get("data")
         return str(result_data) if result_data else "Success (no output)"
 
+    except requests.HTTPError as e:
+        # Include server response body when available to make debugging easier.
+        status = getattr(ctx_resp, "status_code", "unknown")
+        body = ""
+        try:
+            body = ctx_resp.text
+        except Exception:
+            body = "<unable to read response body>"
+        return f"Error: {str(e)}\nHTTP {status}\nResponse:\n{body}"
     except Exception as e:
         return f"Error: {str(e)}"
 
@@ -309,7 +327,8 @@ def list_catalogs_impl() -> str:
             output += f"📚 {catalog.get('name')}\n"
             if catalog.get('comment'):
                 output += f"   Comment: {catalog.get('comment')}\n"
-            output += f"   Owner: {catalog.get('owner')}\n\n"
+            output += f"   Owner: {catalog.get('owner')}\n"
+            output += f"   Created: {catalog.get('created_at')}\n\n"
 
         return output
     except Exception as e:
@@ -327,6 +346,9 @@ def get_catalog_impl(catalog_name: str) -> str:
         output += f"   Full Name: {catalog.get('full_name')}\n"
         output += f"   Owner: {catalog.get('owner')}\n"
         output += f"   Comment: {catalog.get('comment', 'N/A')}\n"
+        output += f"   Created: {catalog.get('created_at')}\n"
+        output += f"   Updated: {catalog.get('updated_at')}\n"
+        output += f"   Storage Location: {catalog.get('storage_location', 'N/A')}\n"
 
         return output
     except Exception as e:
@@ -368,6 +390,9 @@ def get_schema_impl(full_schema_name: str) -> str:
         output += f"   Catalog: {schema.get('catalog_name')}\n"
         output += f"   Owner: {schema.get('owner')}\n"
         output += f"   Comment: {schema.get('comment', 'N/A')}\n"
+        output += f"   Created: {schema.get('created_at')}\n"
+        output += f"   Updated: {schema.get('updated_at')}\n"
+        output += f"   Storage Location: {schema.get('storage_location', 'N/A')}\n"
 
         return output
     except Exception as e:
@@ -391,7 +416,8 @@ def list_tables_impl(catalog_name: str, schema_name: str) -> str:
             output += f"   Type: {table.get('table_type')}\n"
             if table.get('comment'):
                 output += f"   Comment: {table.get('comment')}\n"
-            output += f"   Owner: {table.get('owner')}\n\n"
+            output += f"   Owner: {table.get('owner')}\n"
+            output += f"   Full Name: {table.get('full_name')}\n\n"
 
         return output
     except Exception as e:
@@ -407,15 +433,22 @@ def get_table_impl(full_table_name: str) -> str:
 
         output = f"📊 Table: {table.get('name')}\n"
         output += f"   Full Name: {table.get('full_name')}\n"
+        output += f"   Catalog: {table.get('catalog_name')}\n"
+        output += f"   Schema: {table.get('schema_name')}\n"
         output += f"   Type: {table.get('table_type')}\n"
         output += f"   Owner: {table.get('owner')}\n"
         output += f"   Comment: {table.get('comment', 'N/A')}\n"
+        output += f"   Created: {table.get('created_at')}\n"
+        output += f"   Updated: {table.get('updated_at')}\n"
+        output += f"   Storage Location: {table.get('storage_location', 'N/A')}\n"
 
         columns = table.get('columns', [])
         if columns:
             output += f"\n   Columns ({len(columns)}):\n"
             for col in columns:
                 output += f"     - {col.get('name')}: {col.get('type_name')}\n"
+                if col.get('comment'):
+                    output += f"       {col.get('comment')}\n"
 
         return output
     except Exception as e:
@@ -436,8 +469,10 @@ def create_schema_impl(catalog_name: str, schema_name: str, comment: Optional[st
         output = f"✅ Schema created successfully!\n\n"
         output += f"📁 Schema: {schema.get('name')}\n"
         output += f"   Full Name: {schema.get('full_name')}\n"
+        output += f"   Catalog: {schema.get('catalog_name')}\n"
         output += f"   Owner: {schema.get('owner')}\n"
-
+        if schema.get('comment'):
+            output += f"   Comment: {schema.get('comment')}\n"
         return output
     except Exception as e:
         return f"Error creating schema: {str(e)}"
