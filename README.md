@@ -38,7 +38,7 @@ export DATABRICKS_TOKEN=dapi_your_token_here
 Make sure the variables are loaded:
 
 ```
-source `~/.zshrc`
+source ~/.zshrc
 ````
 
 **To get your Personal Access Token (PAT):** Databricks workspace → Profile → Settings → Developer → Access Tokens → Generate new token
