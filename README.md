@@ -35,6 +35,11 @@ Add to your `~/.zshrc` or `~/.bashrc`:
 export DATABRICKS_HOST=https://your-workspace.cloud.databricks.com
 export DATABRICKS_TOKEN=dapi_your_token_here
 ```
+Make sure the variables are loaded:
+
+```
+source `~/.zshrc`
+````
 
 **To get your Personal Access Token (PAT):** Databricks workspace → Profile → Settings → Developer → Access Tokens → Generate new token
 
@@ -45,6 +50,9 @@ Create your project directory and install the Databricks skills:
 ```bash
 # Create and enter your project
 mkdir my-databricks-project && cd my-databricks-project
+
+# Initialize git in your my-databricks-project project
+git init .
 
 # Install skills for your AI client (downloads from remote)
 curl -sSL https://raw.githubusercontent.com/databricks-solutions/databricks-exec-code-mcp/main/install_skills.sh | bash -s -- --cursor
